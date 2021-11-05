@@ -8,6 +8,7 @@ const List<String> CURRENCY_IMAGES = [
   'assets/dollar.png',
   'assets/lire.png'
 ];
+const List<double> CURRENCY_VALUES = [4.5, 4.28, 5.78];
 
 final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
@@ -110,20 +111,33 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  value = double.parse(controller.text);
-                  value = value * EURO_CURRENCY;
-                });
-                print(value.toStringAsFixed(2));
-              },
-              child: const Text('Convert!'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    value = double.parse(controller.text);
+                    value = value * CURRENCY_VALUES.elementAt(index);
+                  });
+                  print(value.toStringAsFixed(2));
+                },
+                child: const Text('Convert!'),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.grey),
+                ),
               ),
             ),
-            Text('$value'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                '$value lei',
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 35.0,
+                ),
+              ),
+            ),
           ],
         ),
       ),
