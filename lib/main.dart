@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 const EURO_CURRENCY = 4.5;
-double valueReceived = 0;
-double valueConverted = 0;
+const List<String> CURRENCY_IMAGES = [
+  'assets/euro1.png',
+  'assets/dollar.png',
+  'assets/lire.png'
+];
 
 final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
@@ -17,7 +20,7 @@ class CurrencyConvertorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: HomePage(),
     );
   }
@@ -34,12 +37,48 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController controller = TextEditingController();
 
   double value = 0;
-  final double EURO_CURRENCY = 4.5;
+
+  int index = 0;
+  String image = CURRENCY_IMAGES.elementAt(0);
+
+  _HomePageState() {
+    image = CURRENCY_IMAGES.elementAt(index);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          DropdownButton(
+            value: index,
+            hint: const Text('Select'),
+            onChanged: (int? value) {
+              if (value == null) {
+                return;
+              }
+
+              setState(() {
+                index = value;
+                image = CURRENCY_IMAGES.elementAt(index);
+              });
+            },
+            items: const <DropdownMenuItem<int>>[
+              DropdownMenuItem<int>(
+                value: 0,
+                child: Text('euro'),
+              ),
+              DropdownMenuItem<int>(
+                value: 1,
+                child: Text('dolari'),
+              ),
+              DropdownMenuItem<int>(
+                value: 2,
+                child: Text('lire'),
+              )
+            ],
+          )
+        ],
         centerTitle: true,
         title: const Text(
           'Currency Convertor',
@@ -53,7 +92,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/cash-ron.png',
+                  image,
                   height: 200,
                 ),
               ],

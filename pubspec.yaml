@@ -59,6 +59,10 @@ flutter:
 
   assets:
     - assets/cash-ron.png
+    - assets/euro.png
+    - assets/euro1.png
+    - assets/dollar.png
+    - assets/lire.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
