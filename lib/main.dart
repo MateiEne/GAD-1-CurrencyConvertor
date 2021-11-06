@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                '$valueConverted lei',
+                '${valueConverted!.toStringAsFixed(2)} lei',
                 style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 30.0,
