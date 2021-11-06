@@ -2,15 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const EURO_CURRENCY = 4.5;
 const List<String> CURRENCY_IMAGES = [
   'assets/euro1.png',
   'assets/dollar.png',
   'assets/lire.png'
-];
-const List<double> CURRENCY_VALUES = [4.5, 4.28, 5.78];
+]; // a list with all the images used
 
-final GlobalKey<FormState> formkey = GlobalKey<FormState>();
+const List<double> CURRENCY_VALUES = [
+  4.5,
+  4.28,
+  5.78
+]; // a list with all the currencies used
 
 void main() {
   runApp(const CurrencyConvertorApp());
@@ -37,10 +39,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController controller = TextEditingController();
 
-  double value = 0;
+  double? valueReceived = 0; // this is the value received from the user input
+  double? valueConverted = 0; // this will be the value converted to the
+  // respectively value received from the user input
 
-  int index = 0;
-  String image = CURRENCY_IMAGES.elementAt(0);
+  int index = 0; // index of the image that corresponds with the index of
+  // currency values list
+
+  String image = CURRENCY_IMAGES.elementAt(0); // current image
+
+  String? errorText; // value that contains the current error if appropiate
 
   _HomePageState() {
     image = CURRENCY_IMAGES.elementAt(index);
@@ -58,8 +66,8 @@ class _HomePageState extends State<HomePage> {
               if (value == null) {
                 return;
               }
-
               setState(() {
+                // setting the image that corresponds to the wanted convercy
                 index = value;
                 image = CURRENCY_IMAGES.elementAt(index);
               });
@@ -102,39 +110,48 @@ class _HomePageState extends State<HomePage> {
               controller: controller,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
+                errorText: errorText,
                 hintText: 'Enter a number',
                 suffix: IconButton(
                   onPressed: () {
                     controller.clear();
+                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                   icon: const Icon(Icons.close),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    value = double.parse(controller.text);
-                    value = value * CURRENCY_VALUES.elementAt(index);
-                  });
-                  print(value.toStringAsFixed(2));
-                },
-                child: const Text('Convert!'),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.grey),
-                ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  valueReceived = double.tryParse(controller.text);
+                  // setting errors
+                  if (controller.text.isEmpty) {
+                    errorText = 'Please enter a number';
+                    valueConverted = 0;
+                  } else if (valueReceived == null) {
+                    errorText = 'This is not a number';
+                    valueConverted = 0;
+                  } else {
+                    // converting the received value
+                    valueConverted =
+                        valueReceived! * CURRENCY_VALUES.elementAt(index);
+                    errorText = null;
+                  }
+                });
+              },
+              child: const Text('Convert!'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                '$value lei',
+                '$valueConverted lei',
                 style: const TextStyle(
                   color: Colors.grey,
-                  fontSize: 35.0,
+                  fontSize: 30.0,
                 ),
               ),
             ),
