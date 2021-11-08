@@ -1,18 +1,7 @@
+import 'package:currency_convertor/currencies.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-const List<String> CURRENCY_IMAGES = [
-  'assets/euro1.png',
-  'assets/dollar.png',
-  'assets/lire.png'
-]; // a list with all the images used
-
-const List<double> CURRENCY_VALUES = [
-  4.5,
-  4.28,
-  5.78
-]; // a list with all the currencies used
 
 void main() {
   runApp(const CurrencyConvertorApp());
@@ -43,15 +32,18 @@ class _HomePageState extends State<HomePage> {
   double? valueConverted = 0; // this will be the value converted to the
   // respectively value received from the user input
 
-  int index = 0; // index of the image that corresponds with the index of
-  // currency values list
+  String? errorText; // value that contains the current error if appropriate
 
-  String image = CURRENCY_IMAGES.elementAt(0); // current image
+  CurrencyData currencyData = CURRENCIES_DATA[0];
 
-  String? errorText; // value that contains the current error if appropiate
+  List<DropdownMenuItem<CurrencyData>> getCurrenciesMenuItems() {
+    List<DropdownMenuItem<CurrencyData>> result = [];
 
-  _HomePageState() {
-    image = CURRENCY_IMAGES.elementAt(index);
+    for (var element in CURRENCIES_DATA) {
+      result.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
+
+    return result;
   }
 
   @override
@@ -60,32 +52,19 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: <Widget>[
           DropdownButton(
-            value: index,
+            value: currencyData,
             hint: const Text('Select'),
-            onChanged: (int? value) {
+            onChanged: (CurrencyData? value) {
               if (value == null) {
                 return;
               }
+
               setState(() {
-                // setting the image that corresponds to the wanted convercy
-                index = value;
-                image = CURRENCY_IMAGES.elementAt(index);
+                // setting the selected currency
+                currencyData = value;
               });
             },
-            items: const <DropdownMenuItem<int>>[
-              DropdownMenuItem<int>(
-                value: 0,
-                child: Text('euro'),
-              ),
-              DropdownMenuItem<int>(
-                value: 1,
-                child: Text('dolari'),
-              ),
-              DropdownMenuItem<int>(
-                value: 2,
-                child: Text('lire'),
-              )
-            ],
+            items: getCurrenciesMenuItems(),
           )
         ],
         centerTitle: true,
@@ -101,7 +80,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  image,
+                  currencyData.assetPath,
                   height: 200,
                 ),
               ],
@@ -135,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                   } else {
                     // converting the received value
                     valueConverted =
-                        valueReceived! * CURRENCY_VALUES.elementAt(index);
+                        valueReceived! * currencyData.ronConvertion;
                     errorText = null;
                   }
                 });
