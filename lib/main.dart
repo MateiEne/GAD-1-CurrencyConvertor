@@ -43,7 +43,25 @@ class _HomePageState extends State<HomePage> {
       result.add(DropdownMenuItem(value: element, child: Text(element.name)));
     }
 
+    //return CURRENCIES_DATA.map((CurrencyData element) => DropdownMenuItem(value: element, child: Text(element.name)));
+
     return result;
+  }
+
+  void currecyChaged() {
+    valueReceived = double.tryParse(controller.text);
+    // setting errors
+    if (controller.text.isEmpty) {
+      errorText = 'Please enter a number';
+      valueConverted = 0;
+    } else if (valueReceived == null) {
+      errorText = 'This is not a number';
+      valueConverted = 0;
+    } else {
+      // converting the received value
+      valueConverted = valueReceived! * currencyData.ronConvertion;
+      errorText = null;
+    }
   }
 
   @override
@@ -62,6 +80,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 // setting the selected currency
                 currencyData = value;
+                currecyChaged();
               });
             },
             items: getCurrenciesMenuItems(),
@@ -103,20 +122,7 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  valueReceived = double.tryParse(controller.text);
-                  // setting errors
-                  if (controller.text.isEmpty) {
-                    errorText = 'Please enter a number';
-                    valueConverted = 0;
-                  } else if (valueReceived == null) {
-                    errorText = 'This is not a number';
-                    valueConverted = 0;
-                  } else {
-                    // converting the received value
-                    valueConverted =
-                        valueReceived! * currencyData.ronConvertion;
-                    errorText = null;
-                  }
+                  currecyChaged();
                 });
               },
               child: const Text('Convert!'),
